@@ -6,17 +6,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RefreshToken {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Column(unique = true, nullable = false)
@@ -25,22 +25,4 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiryDate;
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getEmail() {
-        return email;   
-    }
-
-    public String getToken() {
-    return token;
-}
 }

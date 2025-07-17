@@ -1,5 +1,10 @@
 package com.example.roadtouk.userservice.auth;
 
+import com.example.roadtouk.userservice.dto.LoginRequest;
+import com.example.roadtouk.userservice.dto.RegistrationRequest;
+import com.example.roadtouk.userservice.entity.User;
+
 public interface AuthService {
-    AuthResponse login(String email, String password);
+    User registerUser(RegistrationRequest registrationRequest);
+    AuthResponse login(LoginRequest loginRequest);
 }

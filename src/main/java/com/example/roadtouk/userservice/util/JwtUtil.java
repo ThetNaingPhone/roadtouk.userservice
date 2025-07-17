@@ -2,56 +2,70 @@ package com.example.roadtouk.userservice.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.security.Key;
 import java.util.Date;
-import java.nio.charset.StandardCharsets;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String secret;
 
     @Value("${jwt.expiration}")
-    private long jwtExpirationMs;
+    private long expiration;
 
-    private SecretKey getSigningKey() {
-        return new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+    private Key key;
+
+    @PostConstruct
+   public void init() {
+      // Convert the secret string into a Key object
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+     }
+
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    public String generateToken(String email) {
-        Instant now = Instant.now();
-        return Jwts.builder()
-                .subject(email)
-                .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusMillis(jwtExpirationMs)))
-                .signWith(getSigningKey())
-                .compact();
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+          final Claims claims = extractAllClaims(token);
+          return claimsResolver.apply(claims);
     }
 
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-        return claims.getSubject();
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public boolean validateJwtToken(String token) {
-        try {
-            Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+           Map<String, Object> claims = new HashMap<>();
+          // The 'subject' of the token is the user's identifier, which is now their email.
+             return createToken(claims, userDetails.getUsername());
+          }
+    private String createToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key).compact();
         }
-    }
+
+              public Boolean validateToken(String token, UserDetails userDetails) {
+              // **CHANGE**: The extracted "username" is now the email.
+                final String email = extractEmail(token);
+              return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            }
+
 }
