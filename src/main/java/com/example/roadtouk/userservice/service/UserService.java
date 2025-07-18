@@ -11,9 +11,9 @@ public interface UserService {
 
     List<UserDto> findAll();
 
-    UserDto findById(String id);
+    UserDto findById(Long id);
 
-    void delete(String id);
+    void delete(Long id);
 
     UserDto save(UserDto userDto);
 }

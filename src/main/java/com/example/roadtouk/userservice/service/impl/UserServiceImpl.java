@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findById(String id) {
+    public UserDto findById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found with id:" + id);
         }

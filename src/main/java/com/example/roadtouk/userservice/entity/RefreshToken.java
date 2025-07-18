@@ -1,9 +1,9 @@
 package com.example.roadtouk.userservice.entity;
 
-import java.time.Instant;
-
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -12,11 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class RefreshToken {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // Changed to Long for consistency
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id") // This now correctly joins on the Long ID
     private User user;
 
     @Column(unique = true, nullable = false)
@@ -24,5 +25,4 @@ public class RefreshToken {
 
     @Column(nullable = false)
     private Instant expiryDate;
-
 }

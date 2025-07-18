@@ -2,11 +2,7 @@ package com.example.roadtouk.userservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -14,28 +10,28 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
     @Id
-    @UuidGenerator
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Changed from UUID to IDENTITY
+    private Long id; // Changed from String to Long
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    @ElementCollection
-    private List<String> applications;
+    // The OneToMany relationships to Application and Advice remain unchanged
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Application> applications;
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Advice> advice;
 
-    @ElementCollection
-    private List<String> advice;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    // The direct link to RefreshToken has been removed
 }

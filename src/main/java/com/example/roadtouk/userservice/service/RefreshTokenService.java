@@ -1,8 +1,8 @@
 package com.example.roadtouk.userservice.service;
 
-import com.example.roadtouk.userservice.exception.TokenRefreshException;
 import com.example.roadtouk.userservice.entity.RefreshToken;
 import com.example.roadtouk.userservice.entity.User;
+import com.example.roadtouk.userservice.exception.TokenRefreshException;
 import com.example.roadtouk.userservice.repository.RefreshTokenRepository;
 import com.example.roadtouk.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +31,12 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public RefreshToken createRefreshToken(String userId) {
+    public RefreshToken createRefreshToken(Long userId) {
+        // Find the user first
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        // Upsert logic — if token exists, update it; otherwise create new
+        // Check if a token already exists for this user and reuse it, or create a new one
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
                 .orElse(new RefreshToken());
 
@@ -49,7 +50,7 @@ public class RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please sign in again.");
+            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new signin request");
         }
         return token;
     }
