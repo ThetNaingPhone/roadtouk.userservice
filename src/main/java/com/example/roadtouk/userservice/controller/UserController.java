@@ -34,11 +34,11 @@ public class UserController {
         // Create a DTO to send back to the client
         UserDto userDto = new UserDto();
         userDto.setId(userDetails.getId());
-        userDto.setUsername(userDetails.getUser().getUsername()); // Get username from the wrapped User entity
-        userDto.setEmail(userDetails.getUsername()); // getUsername() on UserDetailsImpl returns the email
-        userDto.setApplications(userDetails.getUser().getApplications());
-        userDto.setAdvice(userDetails.getUser().getAdvice());
-        userDto.setCreatedAt(userDetails.getUser().getCreatedAt());
+//        userDto.setUsername(userDetails.getUser().getUsername()); // Get username from the wrapped User entity
+//        userDto.setEmail(userDetails.getUsername()); // getUsername() on UserDetailsImpl returns the email
+//        userDto.setApplications(userDetails.getUser().getApplications());
+//        userDto.setAdvice(userDetails.getUser().getAdvice());
+//        userDto.setCreatedAt(userDetails.getUser().getCreatedAt());
 
         return ResponseEntity.ok(userDto);
     }

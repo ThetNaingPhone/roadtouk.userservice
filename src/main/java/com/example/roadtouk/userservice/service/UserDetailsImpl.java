@@ -1,5 +1,6 @@
 package com.example.roadtouk.userservice.service;
 
+import com.example.roadtouk.userservice.entity.Admin;
 import com.example.roadtouk.userservice.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -14,32 +15,43 @@ import java.util.List;
 public class UserDetailsImpl implements UserDetails {
 
     @Getter
-    private final User user;
+    private final String id;
+    private final String username;
+    private final String email;
+    private final String passwordHash;
+    private final String role;
+
 
     public UserDetailsImpl(User user) {
-        this.user = user;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.passwordHash = user.getPasswordHash();
+        this.role = user.getRole();
     }
 
-    public String getId() {
-        return user.getId();
+    public UserDetailsImpl(Admin admin) {
+        this.id = admin.getId();
+        this.username = admin.getUsername();
+        this.email = admin.getEmail();
+        this.passwordHash = admin.getPasswordHash();
+        this.role = admin.getRole().name();
     }
-
-    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole())); // ✅ Example: ROLE_USER
+        return List.of(new SimpleGrantedAuthority(this.role)); // ✅ Example: ROLE_USER
     }
 
     @Override
     @JsonIgnore
     public String getPassword() {
-        return user.getPasswordHash();
+        return this.passwordHash;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return this.email;
     }
 
     @Override
