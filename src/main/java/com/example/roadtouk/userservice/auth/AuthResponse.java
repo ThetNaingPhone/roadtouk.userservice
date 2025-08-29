@@ -1,11 +1,14 @@
 package com.example.roadtouk.userservice.auth;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class AuthResponse {
     // Getters and setters (or use Lombok)
+    @Setter
     private String accessToken;
+    @Setter
     private String refreshToken;
     private String role;
 
@@ -15,11 +18,4 @@ public class AuthResponse {
         this.role = role;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }
