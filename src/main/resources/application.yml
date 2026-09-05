@@ -1,21 +1,24 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/userservice
-    username: naingbhone
-    password: 123123
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: user-service
 
 jwt:
-  secret: "this_is_a_very_long_and_secure_secret_key_for_hs512_algorithm_please_change_me_1234567890"
-  expiration: 864000000 # 24 hours
+  secret: ${JWT_SECRET}
+  expiration: 86400000
   refresh-token:
     expiration: 604800000 # 7 days
 
 server:
-  port: 8083
+  port: ${PORT:8083}
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3002}

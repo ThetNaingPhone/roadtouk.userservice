@@ -1,9 +1,0 @@
-com/example/roadtouk/userservice/dto/RegistrationRequest.class
-com/example/roadtouk/userservice/entity/User.class
-com/example/roadtouk/userservice/auth/AuthService.class
-com/example/roadtouk/userservice/Application.class
-com/example/roadtouk/userservice/dto/LoginRequest.class
-com/example/roadtouk/userservice/dto/UserDto.class
-com/example/roadtouk/userservice/auth/AuthController.class
-com/example/roadtouk/userservice/auth/AuthResponse.class
-com/example/roadtouk/userservice/service/UserService.class
